@@ -8,47 +8,43 @@
 </style>
 
 <body>
+    <form method="POST" action="file-uploader.php" enctype="multipart/form-data">
+        <div>
+            <span>Upload File "Example.csv":</span>
+            <input type="file" name="uploadedFile" />
+        </div>
+
+        <input type="submit" name="uploadBtn" value="Upload" />
+    </form>
 
     <?php
-    // Создать PHP-страницу upload.php с формой загрузки CSV-файла
-    // В CSV-файле должны быть 2 столбца: название файла, содержимое
-    // Рядом с файлом upload.php требуется создать папку /upload/ и создать в ней файлы, прочитав CSV-файл.
-    // Какие дыры это может создать? Как бороться?
-    // Ограничений на функции и возможности PHP нет.
 
-    // Пример файла CSV:
-    // aaa.txt,Привет
-    // bbb.log,Тест
-    // ccc.html,Заголовок
+    $filename = './upload/Example.csv';
+    if (file_exists($filename)) {
+        echo "File Example.csv data:";
+        $row = 0;       //row to use it with file name
+        if (($handle = fopen("./upload/Example.csv", "r")) !== FALSE) { //load file .csv
+            echo "<table> <tr> <th>File Name</th> <th>Containt</th> </tr>"; 
+            while (($data = fgetcsv($handle, 1000, "r")) !== FALSE) {   //Get data inside
+                $row++;
+                foreach ($data as $key => $value) {        //extract value from data array
+                    $pieces = explode(";", $value);        // split table's row by ";" 
+                    echo "<tr> <td>";
+                    echo  $pieces[0];       // colume 1 - file name
+                    echo "</td> <td> <xmp>";
+                    echo $pieces[1];        // colume 2 - file containt
+                    echo "</xmp> </td>";     //use <xmp> to avoid loading html
 
-    // При загрузке такого файла должны быть созданы /upload/1.txt, /upload/2.log, /upload/3.html (с соответствующим содержимым)
-$row = 0;
-    if (($handle = fopen("./upload/Example.csv", "r")) !== FALSE) { //load file .csv
-        echo "<table>\n  <tr>           
-        <th>File Name</th>\n
-        <th>Containt</th>\n
-      </tr>";
-        while (($data = fgetcsv($handle, 1000, "r")) !== FALSE) {   //Get data inside
-            $row++;
-            foreach ($data as $key => $value) {        //extract value from data array
-                $key = $row;
-                // echo $row . "  \n";
-                $pieces = explode(";", $value);        // split table row by ";" 
-                echo "<tr> \n  <td>";
-                echo  $pieces[0];       // colume 1 - file name
-                echo "</td> \n <td>";
-                echo $pieces[1];        // colume 2 - file containt
-                echo "</td> \n";
+                    $filext = explode(".", $pieces[0]);
 
-                $filext = explode(".", $pieces[0]);
-
-                $myfile = fopen("./upload/$row.$filext[1]", "w") or die("Unable to open file!");
-                $txt = "$pieces[1]";
-                fwrite($myfile, $txt);
-                fclose($myfile);
+                    $csvfile = fopen("./upload/$row.$filext[1]", "w") or die("Unable to open file!"); //Open for writing only
+                    $fileContaints = "$pieces[1]";
+                    fwrite($csvfile, $fileContaints);       //make file
+                    fclose($csvfile);
+                }
             }
+            fclose($handle);
         }
-        fclose($handle);
+    } else {
+        echo "The file Example.csv does not exist";
     }
-
-
