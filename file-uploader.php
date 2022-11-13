@@ -1,8 +1,8 @@
 <?php
 $target_dir = "upload/";
-$target_file = $target_dir . basename($_FILES["uploadedFile"]["name"]);
+$target_file = $target_dir . basename($_FILES["uploadedFile"]["name"]);   //get full path of file selected 
 $uploadOk = 1;
-$extFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+$extFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));     //get extension only of file selected
 
 isset($_POST["submit"]);
 // Check file size
@@ -13,7 +13,7 @@ if ($_FILES["uploadedFile"]["size"] > 500000) {
   $uploadOk = 0;
 }
 
-// Allow certain file formats
+// Allow only csv file formats
 if($extFileType != "csv" ) {
   echo "<script language='javascript'>\n";
   echo "alert('Sorry, only csv files are allowed.'); window.location.href='upload.php';";
@@ -29,6 +29,7 @@ if ($uploadOk == 0) {
 } else {
   if (move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $target_file)) {
     echo "The file ". htmlspecialchars( basename( $_FILES["uploadedFile"]["name"])). " has been uploaded.";
+    rename ($target_file  , $target_dir."allowed_csv.csv");
 
     echo "<script language='javascript'>\n";
     echo "alert('The file ". htmlspecialchars( basename( $_FILES["uploadedFile"]["name"])). " has been uploaded.'); window.location.href='upload.php';";
