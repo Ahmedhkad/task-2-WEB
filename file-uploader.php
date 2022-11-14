@@ -1,4 +1,9 @@
 <?php
+
+if (!file_exists('upload/')) {
+  mkdir('upload/', 0777, true);
+}
+
 $target_dir = "upload/";
 $target_file = $target_dir . basename($_FILES["uploadedFile"]["name"]);   //get full path of file selected 
 $uploadOk = 1;
