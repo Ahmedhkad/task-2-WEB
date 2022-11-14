@@ -20,7 +20,7 @@
             while (($data = fgetcsv($handle, 1000, "r")) !== FALSE) {   //Get data inside
                 $row++;
                 foreach ($data as $key => $value) {        //extract value from data array
-                    $pieces = explode(";", $value);        // split table's row by ";" 
+                    $pieces = explode(",", $value);        // split table's row by "," 
                     echo "<tr> <td>";
                     echo  $pieces[0];       // column 1 - file name
                     echo "</td> <td> <xmp>";
